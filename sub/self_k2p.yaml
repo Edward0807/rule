@@ -1,0 +1,267 @@
+# 机场订阅，名称不能重复
+proxy-providers:
+  Airport_01:
+    type: http
+    interval: 3600
+    health-check:
+      enable: true
+      url: https://www.gstatic.com/generate_204
+      interval: 1800
+    proxy: 全球直连
+    url: "http/https........."
+    override:
+      routing-mark: 255
+      client-fingerprint: chrome
+
+#
+#  Airport_02:
+#    type: http
+#    interval: 1800
+##    path: ./provider2.yaml
+#    health-check:
+#      enable: true
+#      url: https://www.gstatic.com/generate_204
+#      interval: 600
+#    proxy: 全球直连
+#    url: "http/https........."
+
+#  Airport_03:
+#    type: http
+#    interval: 1800
+#    health-check:
+#      enable: true
+#      url: https://www.gstatic.com/generate_204
+#      interval: 600
+#    proxy: 全球直连
+#    url: "http/https........."
+
+  Airport_04:
+    type: file
+    path: ./justmysocks.yaml
+    health-check:
+      enable: true
+      interval: 1800
+      url: https://www.gstatic.com/generate_204
+      lazy: true
+    override:
+      routing-mark: 255
+      client-fingerprint: chrome
+    #proxy: 全球直连
+    #auto-update: false
+    #watch: false
+    #use-watcher: false
+
+
+# 全局配置
+port: 7890
+socks-port: 7891
+redir-port: 7892
+mixed-port: 7894
+tproxy-port: 7893
+ipv6: true
+allow-lan: true
+unified-delay: true
+tcp-concurrent: true
+
+# 控制面板
+external-controller: 0.0.0.0:10086
+secret: "Huawei@123"
+external-ui: "ui"
+#external-ui-name: zashboard
+#external-ui-url: "https://gh.elelele.com/https://github.com/Zephyruso/zashboard/archive/refs/heads/gh-pages.zip"
+
+# 匹配进程 always/strict/off
+find-process-mode: strict
+#The `global-client-fingerprint` configuration is deprecated
+#global-client-fingerprint: chrome
+keep-alive-idle: 600
+keep-alive-interval: 30
+
+# 策略组选择和fakeip缓存
+profile:
+  store-selected: true
+  store-fake-ip: true
+
+# 流量嗅探
+sniffer:
+  enable: true
+  sniff:
+    HTTP:
+      ports: [80, 8080-8880]
+      override-destination: true
+    TLS:
+      ports: [443, 8443]
+    QUIC:
+      ports: [443, 8443]
+  force-domain:
+    - +.v2ex.com
+  skip-domain:
+    - "dlg.io.mi.com"
+    - "+.push.apple.com"
+    - "+.apple.com"
+
+# 代理模式
+tun:
+  enable: false
+  stack: mixed
+  dns-hijack:
+    - "any:53"
+    - "tcp://any:53"
+  auto-route: true
+  auto-redirect: true
+  auto-detect-interface: true
+
+# DNS模块
+dns:
+  enable: true
+  cache-algorithm: arc
+  listen: "[::]:1053"
+#  listen: 0.0.0.0:1053
+  ipv6: true
+#  ipv6: false
+  respect-rules: true
+  # 模式切换 redir-host / fake-ip
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-range6: fdfe:dcba:9876::1/64
+  # 模式切换 whitelist/blacklist
+  # 黑名单模式表示如果匹配成功则不返回 Fake-IP, 白名单模式时只有匹配成功才返回 Fake-IP
+  fake-ip-filter-mode: blacklist
+  fake-ip-filter:
+    - "rule-set:private_domain,cn_domain"
+    - "time.*.com"
+    - "+.pool.ntp.org"
+    - "+.ntp.tencent.com"
+    - "+.ntp1.aliyun.com"
+    - "+.ntp.ntsc.ac.cn"
+    - "+.cn.ntp.org.cn"
+    - "+.yfsp.tv"
+    - "+.iyf.tv"
+    - "+.clawcloudrun.com"
+    - "+.163.com"
+    - "+.126.net"      # 163 邮箱常使用的附件/资源域名
+    - "+.netease.com"  # 网易基础域名
+
+
+  default-nameserver:
+    - 202.106.46.151
+    - 202.106.195.68
+    - 223.5.5.5
+    - 119.29.29.29
+  proxy-server-nameserver:
+    - 202.106.46.151
+    - 202.106.195.68
+    - 223.5.5.5
+    - 119.29.29.29
+  nameserver:
+    - 202.106.46.151
+    - 202.106.195.68
+    - 223.5.5.5
+    - 119.29.29.29
+
+
+proxies:
+- name: "全球直连"
+  type: direct
+  udp: true
+
+# 锚点
+pr: &pr {type: select, proxies: [🚀 节点选择, 🌐 全部节点, 🇯🇵 日本节点, 🇺🇸 美国节点, 🇳🇱 荷兰节点, 🏳️‍🌈 edward, 全球直连]}
+
+# 策略组
+proxy-groups:
+#  - {name: 🤖 AI, type: select, proxies: ["(?=.*(美|US|(?i)States|America))^((?!(港|台|日|韩|新)).)*$]}
+#  - {name: 🤖 AI, type: select, proxies: ["(?=.*(日|JP|(?i)Japan))^((?!(港|台|韩|新|美)).)*$"]}
+#  - {name: 🚀 节点选择, type: select, proxies: [♻️ 自动选择, 🌐 全部节点, 全球直连]}
+# 
+
+  - {name: 🚀 节点选择, type: select, proxies: [♻️ 自动选择-jp, ♻️ 自动选择-us, 🌐 全部节点, 🇯🇵 日本节点, 🇺🇸 美国节点, 🇳🇱 荷兰节点, 🏳️‍🌈 edward, 全球直连]}
+  - {name: 🤖 GeminiGoogle, type: select, proxies: [🌐 全部节点, 🇯🇵 日本节点, 🇺🇸 美国节点, 🇳🇱 荷兰节点, 🏳️‍🌈 edward, 🚀 节点选择]}
+  - {name: 📹 YouTube, !!merge <<: *pr}
+
+  - {name: 🤖 AI, type: select, proxies: [🌐 全部节点, 🇯🇵 日本节点, 🇺🇸 美国节点, 🇳🇱 荷兰节点, 🏳️‍🌈 edward, 🚀 节点选择]}
+
+  - {name: 👨🏿‍💻 GitHub, !!merge <<: *pr}
+  - {name: 🐬 OneDrive, !!merge <<: *pr}
+  - {name: 🪟 Microsoft, !!merge <<: *pr}
+  - {name: 🎵 TikTok, !!merge <<: *pr}
+  - {name: ✖️ twitter, type: select, proxies: [🌐 全部节点, 🇯🇵 日本节点, 🇺🇸 美国节点, 🇳🇱 荷兰节点, 🏳️‍🌈 edward, 🚀 节点选择]}
+  - {name: 📲 Telegram, !!merge <<: *pr}
+  - {name: 🎥 NETFLIX, !!merge <<: *pr}
+  - {name: ✈️ Speedtest, !!merge <<: *pr}
+  - {name: 💶 PayPal, !!merge <<: *pr}
+  - {name: 🍎 Apple, type: select, proxies: [全球直连, 🚀 节点选择]}
+  - {name: 🎯 全球直连, type: select, proxies: [全球直连, 🚀 节点选择]}
+  - {name: 🐟 漏网之鱼, !!merge <<: *pr}
+  - {name: ♻️ 自动选择-jp, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "^((?!(直连|hy2|NL|us)).)*$"}
+  - {name: ♻️ 自动选择-us, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "^((?!(直连|hy2|NL|jp)).)*$"}
+  - {name: 🌐 全部节点, type: select, include-all: true}
+  - {name: 🇯🇵 日本节点, type: select, include-all: true, filter: "(?i)日|JP|Japan"}
+  - {name: 🇺🇸 美国节点, type: select, include-all: true, filter: "(?i)日|us|US"}
+  - {name: 🇳🇱 荷兰节点, type: select, include-all: true, filter: "(?=.*(荷|NL|(?i)Nederland))^((?!(港|台|日|韩|新|美)).)*$"}
+  - {name: 🏳️‍🌈 edward, type: select, include-all: true}
+
+rules:
+  - RULE-SET,private_ip,全球直连,no-resolve
+  - RULE-SET,private_domain,全球直连
+  - DOMAIN-SUFFIX,madou.club,🚀 节点选择
+  - RULE-SET,apple_domain,🍎 Apple
+  - RULE-SET,proxylite,🚀 节点选择
+
+
+  - RULE-SET,Gemini,🤖 GeminiGoogle
+  - RULE-SET,google_domain,🤖 GeminiGoogle
+  - RULE-SET,AI,🤖 AI
+
+  - RULE-SET,github_domain,👨🏿‍💻 GitHub
+
+  - RULE-SET,youtube_domain,📹 YouTube
+  - RULE-SET,onedrive_domain,🐬 OneDrive
+  - RULE-SET,microsoft_domain,🪟 Microsoft
+  - RULE-SET,tiktok_domain,🎵 TikTok
+  - RULE-SET,twitter_domain,✖️ twitter
+  #- RULE-SET,speedtest_domain,✈️ Speedtest
+  - RULE-SET,telegram_domain,📲 Telegram
+  - RULE-SET,netflix_domain,🎥 NETFLIX
+  - RULE-SET,paypal_domain,💶 PayPal
+  - RULE-SET,gfw_domain,🚀 节点选择
+  - RULE-SET,geolocation-!cn,🚀 节点选择
+  - RULE-SET,cn_domain,🎯 全球直连
+  - RULE-SET,google_ip,🤖 GeminiGoogle,no-resolve
+  - RULE-SET,netflix_ip,🎥 NETFLIX,no-resolve
+  - RULE-SET,twitter_ip,✖️ twitter,no-resolve
+  - RULE-SET,telegram_ip,📲 Telegram,no-resolve
+  - RULE-SET,cn_ip,🎯 全球直连
+  - MATCH,🐟 漏网之鱼
+rule-anchor:
+  ip: &ip {type: http, interval: 86400, behavior: ipcidr, format: mrs}
+  domain: &domain {type: http, interval: 86400, behavior: domain, format: mrs}
+  class: &class {type: http, interval: 86400, behavior: classical, format: text}
+rule-providers:
+  private_domain: {!!merge <<: *domain, url: "https://gh.elelele.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/private.mrs"}
+  #proxylite: {!!merge <<: *class, url: "https://gh.elelele.com/https://raw.githubusercontent.com/qichiyuhub/rule/refs/heads/master/ProxyLite.list"}
+  proxylite: {!!merge <<: *class, url: "https://gh.elelele.com/https://raw.githubusercontent.com/Edward0807/private_ip/refs/heads/main/proxy.list"}
+  Gemini: { <<: *domain, url: "https://gh.elelele.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google.mrs" }
+  AI: { <<: *domain, url: "https://gh.elelele.com/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-ai-chat-!cn.mrs" }
+  youtube_domain: {!!merge <<: *domain, url: "https://gh.elelele.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/youtube.mrs"}
+  google_domain: {!!merge <<: *domain, url: "https://gh.elelele.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google.mrs"}
+  github_domain: {!!merge <<: *domain, url: "https://gh.elelele.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/github.mrs"}
+  telegram_domain: {!!merge <<: *domain, url: "https://gh.elelele.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/telegram.mrs"}
+  netflix_domain: {!!merge <<: *domain, url: "https://gh.elelele.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/netflix.mrs"}
+  paypal_domain: {!!merge <<: *domain, url: "https://gh.elelele.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/paypal.mrs"}
+  onedrive_domain: {!!merge <<: *domain, url: "https://gh.elelele.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/onedrive.mrs"}
+  microsoft_domain: {!!merge <<: *domain, url: "https://gh.elelele.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/microsoft.mrs"}
+  apple_domain: {!!merge <<: *domain, url: "https://gh.elelele.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/apple-cn.mrs"}
+  #speedtest_domain: {!!merge <<: *domain, url: "https://gh.elelele.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/ookla-speedtest.mrs"}
+  tiktok_domain: {!!merge <<: *domain, url: "https://gh.elelele.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/tiktok.mrs"}
+  twitter_domain: {!!merge <<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/twitter.mrs"}
+  gfw_domain: {!!merge <<: *domain, url: "https://gh.elelele.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/gfw.mrs"}
+  geolocation-!cn: {!!merge <<: *domain, url: "https://gh.elelele.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/geolocation-!cn.mrs"}
+  cn_domain: {!!merge <<: *domain, url: "https://gh.elelele.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/cn.mrs"}
+
+  cn_ip: {!!merge <<: *ip, url: "https://gh.elelele.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/cn.mrs"}
+  google_ip: {!!merge <<: *ip, url: "https://gh.elelele.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/google.mrs"}
+  telegram_ip: {!!merge <<: *ip, url: "https://gh.elelele.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/telegram.mrs"}
+  netflix_ip: {!!merge <<: *ip, url: "https://gh.elelele.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/netflix.mrs"}
+  twitter_ip: {!!merge <<: *ip, url: "https://gh.elelele.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/twitter.mrs"}
+  private_ip: {!!merge <<: *ip, url: "https://gh.elelele.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/private.mrs"}
